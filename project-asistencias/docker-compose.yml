@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+
+  asistapp:
+    env_file:
+      - settings.env
+    environment: 
+      PATH_PREFIX: Asistencias
+    build: ./contenedorAsistApp
+    restart: always
+    container_name: asistapp
+    volumes:
+      - ./contenedorAsistApp/Asistencias:/code
+    depends_on:
+      - bd_asistapp
+      
+  bd_asistapp:
+    image: mysql:5.7
+    restart: always
+    env_file:
+      - basedatos.env
+    volumes:
+      - ./contenedorAsistApp/data:/var/lib/mysql
+
+
+  nginx_asistapp:
+    image: nginx
+    restart: always
+    volumes:
+      - ./contenedorAsistApp/nginx/templates:/etc/nginx/templates
+      - ./contenedorAsistApp/Asistencias/static:/static
+    depends_on:
+      - asistapp
+    ports:
+      - 8000:80
+    environment: 
+      PATH_PREFIX: Asistencias

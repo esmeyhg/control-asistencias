@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block titulo %}Lista de Asistencias
+
+<a class="btn btn-info" href="{% url 'Usuarios:registrarAsistencias' %}" role="button">
+    Nueva
+</a>
+{% endblock %}
+<!--{% block scripts %}
+    <script src="/static/js/busqueda.js"></script>
+{% endblock scripts %}-->
+
+{% block contenido %}
+
+
+{% if messages %}
+  <div class="messages container-fluid">
+    {% for message in messages %}
+    <div class="success alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="container-fluid">
+        <table id="datos" class="table table-striped">
+            <thead>
+                <tr class="table100-head">
+                    <th class="column1">Matrícula</th>  
+                    <th class="column2">Nombre</th>  
+                    <th class="column3">Plática</th>  
+                    <th class="column3">Fecha</th> 
+                    <th class="column3">Acciones</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% for asistencia in asistencias %}
+                    {% for asistente in asistencia.idEstudiante.all %}
+                    <tr>
+                        <td class="column1">{{ asistente.matricula}}</td>  
+                        <td class="column2">{{ asistente.nombre }} {{ asistente.apellido_paterno }} {{ asistente.apellido_materno }}</td>  
+                        <td class="column3">{{ asistencia.idPlatica.nombre }}</td>  
+                        <td class="column3">{{ asistencia.idPlatica.fecha }}</td> 
+                        <!--/updateAsistencias/{{ asistencia.id }}-->
+                        <td><button class="btn btn-link"><a href="{% url 'Usuarios:updateAsistencias' asistencia.id %}"><i class="fa fa-pencil"></i></a></button></td>
+                    </tr>
+                    <tr class="noSearch hide">
+                        <td colspan="100"></td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if asistencias.has_other_pages %}
+            <ul class="pagination">
+                {% if asistencias.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ asistencias.previous_page_number }}">Anterior</a></li>
+                {% else %}
+                <li class="disabled"><span></span></li>
+                {% endif %}
+                {% for i in asistencias.paginator.page_range %}
+                {% if asistencias.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if asistencias.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ asistencias.next_page_number }}">Siguiente</a></li>
+                {% else %}
+                <li class=" disabled"><span></span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+</div>
+{% endblock contenido %}

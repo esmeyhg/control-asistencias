@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block titulo %}Estudiantes
+
+<a class="btn btn-info" href="{% url 'Usuarios:registrarEstudiante' %}" role="button">
+    Nuevo
+</a>
+{% endblock %}
+<!--{% block scripts %}
+    <script src="/static/js/busqueda.js"></script>
+{% endblock scripts %}-->
+
+{% block contenido %}
+
+{% if messages %}
+  <div class="messages container-fluid">
+    {% for message in messages %}
+    <div class="success alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        
+    {% endfor %}
+  </div>
+{% endif %}
+
+
+<div class="container-fluid">
+        <table id="datos" class="table table-striped">
+            <thead>
+                <tr class="table100-head">
+                    <th class="column1">Matricula</th>  
+                    <th class="column2">Nombre</th>  
+                    <th class="column3">Apellido Paterno</th>  
+                    <th class="column3">Apellido Materno</th>  
+                    <th class="column3">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estudiante in estudiantes %}
+                <tr> 
+                    <td class="column1">{{ estudiante.matricula }}</td>  
+                    <td class="column2">{{ estudiante.nombre }}</td>  
+                    <td class="column3">{{ estudiante.apellido_paterno }}</td>  
+                    <td class="column3">{{ estudiante.apellido_materno }}</td>  
+                    <td class="column3">
+                        <!--/detalleEstudiante/{{ estudiante.id }}-->
+                        <button class="btn btn-link"><a href="{% url 'Usuarios:detalleEstudiante' estudiante.id %}"><i class="fa fa-eye"> Ver</i></a></button>
+                    </td>
+                </tr> 
+                <tr class='noSearch hide'>
+                    <td colspan="10"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if estudiantes.has_other_pages %}
+            <ul class="pagination">
+                {% if estudiantes.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ estudiantes.previous_page_number }}">Anterior</a></li>
+                {% else %}
+                <li class="disabled"><span></span></li>
+                {% endif %}
+                {% for i in estudiantes.paginator.page_range %}
+                {% if estudiantes.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if estudiantes.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ estudiantes.next_page_number }}">Siguiente</a></li>
+                {% else %}
+                <li class=" disabled"><span></span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+</div>
+{% endblock contenido %}

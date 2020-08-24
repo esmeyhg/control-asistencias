@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<meta name="theme-color" content="red">
+
+	<title>AsistApp</title>
+	<!-- Bootstrap -->
+	<link href="{% static 'bootstrap/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href="{% static 'bootstrap/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+	<link href="{% static 'bootstrap/css/sb-admin.css' %}" rel="stylesheet">
+	<link href="{% static 'css/Modificado.css' %}" rel="stylesheet">
+	<link href="{% static 'css/bootstrap-multiselect.css' %}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+	
+	<!-- Scripts -->
+	<script src="{% static 'bootstrap/vendor/jquery/jquery.min.js' %}"></script>
+	<script src="{% static 'js/busqueda.js' %}"></script>
+	<script src="{% static 'js/bootstrap-multiselect.js' %}"></script>
+	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	
+	{% block estilos %}{% endblock %}
+	{% block scripts %}{% endblock %}
+
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #053357;" id="mainNav">
+
+		<a class="navbar-brand" href="{% url 'Usuarios:login' %}">
+			<!-- AQUÍ VA EL HOME DE LA APLICACIÓN, SI NO ESTÁ LOGEADO, LO REDIRIGE A LA PANTALLA DE LOGIN-->
+			<h5 class="chicago">
+				AsistApp
+				<i class="fa fa-list" aria-hidden="true" style="color:white"></i>
+			</h5>
+		</a>
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+		 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<!--sidebar-->
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+				{% if user.is_authenticated %}
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Estudiantes">
+					<a class="nav-link" href="{% url 'Usuarios:estudiantes' %}">
+						<i class="fa fa-graduation-cap" aria-hidden="true"></i>
+						<span class="nav-link-text">Estudiantes</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Estudiantes">
+					<a class="nav-link" href="{% url 'Usuarios:proveedores' %}">
+						<i class="fa fa-university" aria-hidden="true"></i>
+						<span class="nav-link-text">Proveedores</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Estudiantes">
+					<a class="nav-link" href="{% url 'Usuarios:facilitadores' %}">
+						<i class="fa fa-group" aria-hidden="true"></i>
+						<span class="nav-link-text">Ponentes</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Estudiantes">
+					<a class="nav-link" href="{% url 'Usuarios:platicas' %}">
+						<i class="fa fa-file-powerpoint-o" aria-hidden="true"></i>
+						<span class="nav-link-text">Pláticas</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Estudiantes">
+					<a class="nav-link" href="{% url 'Usuarios:asistencias' %}">
+						<i class="fa fa-th-list" aria-hidden="true"></i>
+						<span class="nav-link-text">Asistencias</span>
+					</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav sidenav-toggler">
+				<li class="nav-item">
+					<a class="nav-link text-center" id="sidenavToggler">
+						<i class="fa fa-fw fa-angle-left"></i>
+					</a>
+				</li>
+				{% endif %}
+			</ul>
+				
+			<ul class="navbar-nav ml-auto">
+				{% if user.is_authenticated %}
+				<!--Buscar-->
+						<li class="nav-item">
+							<form class="form-inline my-2 my-lg-0 mr-lg-2">
+								<div class="input-group">
+									<input id="searchTerm" type="text" onkeyup="doSearch()" placeholder="Buscar">
+								</div>
+							</form>
+						</li>
+
+				{% endif %}
+
+				<!--Logout-->
+				{% if user.is_authenticated %}
+				<li class="nav-item">
+					<a class="btn btn-info" href="{% url 'Usuarios:cuenta' %}" id="nombreUsuario">
+						<i class="fa fa-fw fa-user-circle"></i>{{user.first_name}}</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+						<i class="fa fa-fw fa-sign-out"></i>Salir</a>
+				</li>
+				{% else %}
+
+				{% url 'Usuarios:login' as login_path %}
+
+				{% if request.get_full_path == login_path %}
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'Usuarios:registro' %}">
+						<i class="fa fa-fw fa-address-card"></i> Registrar
+					</a>
+				</li>
+				{% endif %}
+				
+				{% url 'Usuarios:registro' as registro_path %}
+				{% if request.get_full_path == registro_path %}
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'Usuarios:login' %}">
+						<i class="fa fa-fw fa-sign-in"></i>Entrar
+					</a>
+				</li>
+				{% endif %}
+				{% endif %}
+			</ul>
+		</div>
+	</nav>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+
+			<h2 id="titulo-pag">{% block titulo %}{% endblock %}</h2>
+
+			<h6>{% block subtitulo %}{% endblock subtitulo %}</h6>
+
+			<div>
+				{% block contenido %}{% endblock %}
+			</div>
+		</div>
+		<!-- /.container-fluid-->
+		<!-- /.content-wrapper-->
+		<footer class="sticky-footer">
+			<div class="container">
+				<div class="text-center">
+					<small class="footer-chicago">
+						Copyright © Sistema Asistencias <i class="fa fa-list" aria-hidden="true"></i> 2020
+					</small>
+				</div>
+			</div>
+		</footer>
+		<!-- Scroll to Top Button-->
+		<a class="scroll-to-top rounded" href="#page-top">
+			<i class="fa fa-angle-up"></i>
+		</a>
+		<!-- Logout Modal-->
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">¿Desea salir?
+						</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">Selecciona salir si estás listo para cerrar sesión</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+						<a class="btn btn-primary" href="{% url 'Usuarios:logout' %}">Salir</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Bootstrap core JavaScript-->
+		<script src="{% static 'bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+		<!-- Core plugin JavaScript-->
+		<script src="{% static 'bootstrap/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+		<!-- Custom scripts for all pages-->
+		<script src="{% static 'bootstrap/js/sb-admin.min.js' %}"></script>
+	</div>
+</body>
+</html>
